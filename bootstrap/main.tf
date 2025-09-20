@@ -1,19 +1,21 @@
 # Get current account information
 
-module "backend_setup" {
-  source              = "./backend-setup"
-  state_bucket_name   = "${module.repo-param.repo_name}-state-${random_id.bucket_suffix.hex}"
-  dynamodb_table_name = "${module.repo-param.repo_name}-locks-${random_id.bucket_suffix.hex}"
-
+module "backend-bucket" {
+  source            = "./modules/backend-bucket"
+  state_bucket_name = "${module.repo-param.repo_name}-state-${random_id.bucket_suffix.hex}"
 }
 
-
-
+module "asw-data" {
+  source = "./data/asw-data"
+}
+module "repo-param" {
+  source = "./data/repo-data"
+}
 module "oidc" {
-  source = "./oidc"
+  source = "./modules/oidc"
 
-  # Pass backend_setup output as input
-  state_bucket_name = module.backend_setup.bucket_name
+  # Pass backend-bucket output as input
+  state_bucket_name = module.backend-bucket.bucket_name
 
   # Pass remaining variables from bootstrap
   iam_role_name        = var.iam_role_name
@@ -22,13 +24,23 @@ module "oidc" {
   oidc_client_id_list  = var.oidc_client_id_list
   oidc_thumbprint_list = var.oidc_thumbprint_list
   branch               = "main"
+  account_id           = module.asw-data.account_id
   repo_owner           = module.repo-param.repo_owner
-  repo_name            = module.repo-param.repo_name
+  repo_name            = module.repo-param.repo_name 
 }
 
-module "repo-param" {
-  source = "./repo-param"
-}
+# module "explorer" {
+#   source = "./modules/explorer"
+  
+# }
+
+# module "cloudtrail" {
+#   source = "./modules/cloudtrail"
+#   suffix = module.asw-data.account_id
+#   account_id = module.asw-data.account_id
+# }
+
+
 
 
 
