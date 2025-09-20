@@ -92,7 +92,7 @@ gh auth login
 ## Features  
 
 - **Remote Backend**  
-  Creates an S3 bucket (state storage) and DynamoDB table (state locking).  
+  Creates an S3 bucket (state storage) and (state locking).  
 
 - **OIDC Trust**  
   Configures an IAM role with GitHub OIDC trust to enable secretless authentication for pipelines.  
@@ -101,7 +101,7 @@ gh auth login
   - **Resource Explorer** (uncomment `module "explorer"` in `bootstrap/main.tf`)  
   - **CloudTrail** (uncomment `module "cloudtrail"` in `bootstrap/main.tf`)  
 
-- **SSM Integration**  
+- **Optionas SSM Paramerer store for CI role**  
   Stores the created GitHub CI role ARN into **SSM Parameter Store** at:  
   ```
   /tf-rds-cross-region-dr/ci-role-arn
@@ -152,7 +152,7 @@ To enable **Resource Explorer** or **CloudTrail**, edit `bootstrap/main.tf` and 
 Then re-run:  
 
 ```bash
-make deploy-bootstrap
+make apply-bootstrap
 ```
 
 ### Step 4: Tear Down (Optional)  
